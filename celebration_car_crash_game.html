@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebration Car Crash: Speak to Unlock!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        festiveYellow: '#FFD166',
+                        festivePink: '#EF476F',
+                        festiveBlue: '#118AB2',
+                        festiveGreen: '#06D6A0',
+                        festiveDark: '#073B4C',
+                        festivePurple: '#8338EC'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        lexend: ['Lexend', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #073B4C 0%, #118AB2 100%);
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Speech Pulse Animation */
+        .mic-active {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 71, 111, 0.7); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(239, 71, 111, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 71, 111, 0); }
+        }
+
+        /* Car Crash FX Animation */
+        .car-crash {
+            animation: crash-bounce 0.8s ease-in-out forwards;
+        }
+
+        @keyframes crash-bounce {
+            0% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(40px) rotate(-15deg); }
+            40% { transform: translateX(15px) rotate(10deg); }
+            60% { transform: translateX(30px) rotate(-8deg); }
+            80% { transform: translateX(20px) rotate(4deg); }
+            100% { transform: translateX(25px) rotate(-5deg); }
+        }
+
+        /* Car Drive Pass FX */
+        .car-drive-pass {
+            animation: drive-through 1.2s ease-in-out forwards;
+        }
+
+        @keyframes drive-through {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(180px) scale(0.9); }
+            100% { transform: translateX(350px) scale(0.8); opacity: 0; }
+        }
+
+        /* Bunting Banner Animation */
+        .bunting-wave {
+            animation: swing 3s ease-in-out infinite alternate;
+            transform-origin: top center;
+        }
+
+        @keyframes swing {
+            0% { transform: rotate(-2deg); }
+            100% { transform: rotate(2deg); }
+        }
+
+        /* Smoke Particles */
+        .smoke-particle {
+            position: absolute;
+            background: rgba(200, 200, 200, 0.8);
+            border-radius: 50%;
+            animation: smoke-rise 1s forwards ease-out;
+        }
+
+        @keyframes smoke-rise {
+            0% { transform: scale(0.3) translateY(0); opacity: 0.9; }
+            100% { transform: scale(2.2) translateY(-40px); opacity: 0; }
+        }
+
+        /* Custom Scrollbar for Modal */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD166;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-slate-800 flex flex-col justify-between overflow-x-hidden p-2 sm:p-4">
+
+    <!-- TOP NAVIGATION & HEADER -->
+    <header class="max-w-4xl mx-auto w-full flex items-center justify-between bg-white/10 backdrop-blur-md border border-white/20 p-3 sm:p-4 rounded-2xl shadow-xl mb-2 text-white">
+        <div class="flex items-center gap-3">
+            <div class="bg-festiveYellow text-festiveDark font-black p-2.5 rounded-xl shadow-md text-xl sm:text-2xl flex items-center justify-center">
+                <i class="fa-solid fa-car-burst"></i>
+            </div>
+            <div>
+                <h1 class="text-lg sm:text-2xl font-bold tracking-wide text-festiveYellow leading-tight">Celebration Car Crash!</h1>
+                <p class="text-xs sm:text-sm text-slate-200 hidden sm:block">Speak to Unlock • Year 4 ESL Unit 4</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-4">
+            <!-- Mute Sound Toggle -->
+            <button id="soundToggleBtn" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 text-white p-2.5 sm:px-3.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold">
+                <i id="soundIcon" class="fa-solid fa-volume-high text-lg"></i>
+                <span class="hidden sm:inline">Sound</span>
+            </button>
+
+            <!-- Manual Help Modal Trigger -->
+            <button onclick="toggleHelpModal(true)" class="bg-festiveYellow hover:bg-yellow-300 text-festiveDark p-2.5 sm:px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 text-sm shadow-md">
+                <i class="fa-solid fa-circle-question text-lg"></i>
+                <span class="hidden sm:inline">Help</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN GAME CONTAINER -->
+    <main class="max-w-4xl mx-auto w-full flex-grow flex flex-col justify-center my-auto">
+        
+        <!-- START SCREEN -->
+        <div id="startScreen" class="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-4 border-festiveYellow text-center relative overflow-hidden my-4">
+            <!-- Festive Bunting Header Decoration -->
+            <div class="absolute top-0 left-0 right-0 flex justify-between px-4 -mt-2 bunting-wave pointer-events-none">
+                <svg width="100%" height="40" viewBox="0 0 400 40" preserveAspectRatio="none">
+                    <polygon points="0,0 20,35 40,0" fill="#EF476F"/>
+                    <polygon points="40,0 60,35 80,0" fill="#FFD166"/>
+                    <polygon points="80,0 100,35 120,0" fill="#06D6A0"/>
+                    <polygon points="120,0 140,35 160,0" fill="#118AB2"/>
+                    <polygon points="160,0 180,35 200,0" fill="#8338EC"/>
+                    <polygon points="200,0 220,35 240,0" fill="#EF476F"/>
+                    <polygon points="240,0 260,35 280,0" fill="#FFD166"/>
+                    <polygon points="280,0 300,35 320,0" fill="#06D6A0"/>
+                    <polygon points="320,0 340,35 360,0" fill="#118AB2"/>
+                    <polygon points="360,0 380,35 400,0" fill="#8338EC"/>
+                </svg>
+            </div>
+
+            <div class="mt-4">
+                <span class="bg-indigo-100 text-indigo-700 font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm uppercase tracking-wider inline-block mb-3">
+                    Malaysian Year 4 Primary ESL • Unit 4
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-festiveDark mb-4">Celebration Car Crash!</h2>
+                <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto mb-6 leading-relaxed">
+                    Help our festive car navigate the celebration road! Read sentences aloud using your microphone to open the obstacle gates and earn up to <strong>100 points</strong>.
+                </p>
+
+                <!-- Feature Badges -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-lg mx-auto mb-8 text-left text-xs sm:text-sm">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-microphone text-festivePink text-xl"></i>
+                        <span>Speak clearly into microphone</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-ear-listen text-festiveBlue text-xl"></i>
+                        <span>Listen to audio models anytime</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-2.5 col-span-2 sm:col-span-1">
+                        <i class="fa-solid fa-cake-candles text-festiveGreen text-xl"></i>
+                        <span>Practise celebration phrases</span>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="bg-festiveGreen hover:bg-emerald-400 text-festiveDark font-black text-xl sm:text-2xl px-10 py-4 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border-b-4 border-emerald-600 inline-flex items-center gap-3">
+                    <i class="fa-solid fa-play"></i> START GAME
+                </button>
+            </div>
+        </div>
+
+        <!-- GAMEPLAY SCREEN (Hidden Initially) -->
+        <div id="gameScreen" class="hidden flex-col gap-4">
+
+            <!-- DASHBOARD: STATUS & SCORE -->
+            <div class="bg-white/95 rounded-2xl p-3 sm:p-4 shadow-lg border-2 border-white flex flex-wrap items-center justify-between gap-2">
+                <!-- Level Badge -->
+                <div class="flex items-center gap-2">
+                    <div class="bg-festiveBlue text-white font-black px-3 py-1.5 rounded-xl text-sm sm:text-base shadow">
+                        Level <span id="currentLevelText">1</span> / 10
+                    </div>
+                    <span id="topicTag" class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+                        Dates & Questions
+                    </span>
+                </div>
+
+                <!-- Progress Bar Container -->
+                <div class="w-full sm:w-1/3 order-3 sm:order-2 bg-slate-200 h-4 rounded-full overflow-hidden p-0.5 border border-slate-300">
+                    <div id="progressBar" class="bg-gradient-to-r from-festiveYellow to-festiveGreen h-full rounded-full transition-all duration-500 w-0"></div>
+                </div>
+
+                <!-- Score Board -->
+                <div class="flex items-center gap-2 order-2 sm:order-3">
+                    <div class="bg-amber-100 text-amber-800 border border-amber-300 font-extrabold px-3 py-1.5 rounded-xl text-sm sm:text-base flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-star text-amber-500"></i>
+                        <span>Score: <span id="scoreText">0</span> / 100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROAD CANVAS / SCENE CONTAINER -->
+            <div class="relative bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-200 rounded-3xl border-4 border-white shadow-2xl overflow-hidden h-52 sm:h-64 flex flex-col justify-end">
+                
+                <!-- Background Decorations (Ketupat, Lanterns, Festive Banners) -->
+                <div class="absolute top-2 left-0 right-0 px-4 flex justify-between items-center pointer-events-none opacity-80">
+                    <div class="flex gap-2">
+                        <!-- Pelita / Lantern SVG -->
+                        <svg class="w-7 h-7 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm-4 5a4 4 0 0 1 8 0v2H8V7zm-1 4h10v6a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3v-6zm5 10a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1z"/></svg>
+                        <svg class="w-7 h-7 text-rose-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9 7h6l-3-5zm-5 6h10v8H7V8zm5 9a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+                    </div>
+                    <!-- Malaysian Celebration Greeting Booth Banner -->
+                    <div class="bg-white/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-700 border border-white/60 shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-gifts text-festivePink"></i>
+                        <span id="sceneBoothTag">Festive Celebration Street</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <svg class="w-7 h-7 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l4 7-4 7-4-7 4-7zm0 14l4 7-4-7-4 7 4-7z"/></svg>
+                    </div>
+                </div>
+
+                <!-- Milestone Flag Markers along the top background -->
+                <div id="milestoneMarkers" class="absolute top-12 left-6 right-6 flex justify-between items-center px-4 pointer-events-none">
+                    <!-- Javascript populates 10 checkpoint dots -->
+                </div>
+
+                <!-- Animated Smoke Container for Crashes -->
+                <div id="smokeContainer" class="absolute bottom-16 left-36 z-20 pointer-events-none"></div>
+
+                <!-- ROAD TRACK -->
+                <div class="relative w-full h-28 bg-slate-700 border-t-4 border-amber-300 flex items-center overflow-hidden">
+                    <!-- Moving Road Lines -->
+                    <div class="absolute inset-0 flex items-center justify-around opacity-60">
+                        <div class="w-12 h-2.5 bg-dashed bg-amber-300 rounded-full"></div>
+                        <div class="w-12 h-2.5 bg-dashed bg-amber-300 rounded-full"></div>
+                        <div class="w-12 h-2.5 bg-dashed bg-amber-300 rounded-full"></div>
+                        <div class="w-12 h-2.5 bg-dashed bg-amber-300 rounded-full"></div>
+                        <div class="w-12 h-2.5 bg-dashed bg-amber-300 rounded-full"></div>
+                    </div>
+
+                    <!-- CAR ELEMENT -->
+                    <div id="carWrapper" class="absolute left-6 bottom-4 transition-all duration-700 z-10 flex flex-col items-center">
+                        <!-- Pupil avatar driver bubble -->
+                        <div class="bg-white/90 text-xs px-2 py-0.5 rounded-full shadow text-slate-700 font-extrabold mb-0.5 -ml-2 border border-slate-200">
+                            You 🚗
+                        </div>
+                        <!-- SVG Cute Cartoon Yellow Car -->
+                        <svg id="carSVG" class="w-24 h-16 drop-shadow-lg" viewBox="0 0 120 70">
+                            <!-- Car Body -->
+                            <path d="M10 40 Q 15 25, 35 20 L 75 20 Q 95 25, 105 40 L 112 42 Q 118 45, 115 52 L 105 54 L 5 54 Q 2 48, 10 40 Z" fill="#FFD166" stroke="#D4A300" stroke-width="2"/>
+                            <!-- Roof/Windows -->
+                            <path d="M32 22 L 48 8 L 78 8 L 88 22 Z" fill="#118AB2" stroke="#073B4C" stroke-width="2"/>
+                            <!-- Driver Window Glass -->
+                            <path d="M52 11 L 75 11 L 84 22 L 52 22 Z" fill="#E0F7FA"/>
+                            <!-- Headlight -->
+                            <circle cx="110" cy="44" r="4" fill="#FFF" stroke="#FF9F1C"/>
+                            <!-- Wheels -->
+                            <circle cx="30" cy="54" r="11" fill="#2B2D42"/>
+                            <circle cx="30" cy="54" r="5" fill="#8D99AE"/>
+                            <circle cx="88" cy="54" r="11" fill="#2B2D42"/>
+                            <circle cx="88" cy="54" r="5" fill="#8D99AE"/>
+                            <!-- Decorative Festive Sticker -->
+                            <path d="M58 35 L 63 45 L 52 45 Z" fill="#EF476F"/>
+                        </svg>
+                    </div>
+
+                    <!-- OBSTACLE CHECKPOINT GATE -->
+                    <div id="obstacleGate" class="absolute right-12 bottom-3 z-10 flex flex-col items-center transition-all duration-300">
+                        <div id="gateSign" class="bg-festivePink text-white text-xs font-bold px-2.5 py-1 rounded-md shadow border-2 border-white mb-1 animate-bounce">
+                            STOP & SPEAK
+                        </div>
+                        <!-- SVG Gift Gate Barrier -->
+                        <svg class="w-16 h-20 drop-shadow-md" viewBox="0 0 60 80">
+                            <!-- Left Post -->
+                            <rect x="5" y="20" width="8" height="60" fill="#E63946" rx="2"/>
+                            <!-- Right Post -->
+                            <rect x="47" y="20" width="8" height="60" fill="#E63946" rx="2"/>
+                            <!-- Barrier Arm -->
+                            <rect id="barrierArm" x="8" y="32" width="44" height="10" fill="#FFD166" rx="2" stroke="#D4A300" stroke-width="1.5" class="transition-transform duration-500 transform-gpu origin-right"/>
+                            <!-- Gift Box Centerpiece -->
+                            <rect x="20" y="45" width="20" height="20" fill="#06D6A0" rx="3"/>
+                            <rect x="28" y="45" width="4" height="20" fill="#FFD166"/>
+                            <rect x="20" y="53" width="20" height="4" fill="#FFD166"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SENTENCE DISPLAY CARD -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-xl border-3 border-indigo-100 flex flex-col items-center text-center relative">
+                
+                <div class="flex items-center justify-between w-full mb-3 px-1">
+                    <span class="text-xs font-bold tracking-wider text-slate-400 uppercase flex items-center gap-1">
+                        <i class="fa-solid fa-bullhorn text-festiveBlue"></i> Read sentence aloud:
+                    </span>
+                    
+                    <!-- Audio Model Listen Button -->
+                    <button id="ttsBtn" onclick="speakModelSentence()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs sm:text-sm font-bold px-3 py-1.5 rounded-xl border border-indigo-200 transition flex items-center gap-1.5 active:scale-95">
+                        <i class="fa-solid fa-volume-high text-indigo-500"></i>
+                        <span>Listen to Model</span>
+                    </button>
+                </div>
+
+                <!-- Target Sentence Text -->
+                <div class="my-2 min-h-[70px] flex items-center justify-center">
+                    <p id="targetSentenceText" class="text-2xl sm:text-3xl font-extrabold text-festiveDark leading-snug tracking-wide">
+                        "When is Teacher's Day?"
+                    </p>
+                </div>
+
+                <!-- Spoken Transcript / Live Feedback Display -->
+                <div id="transcriptBox" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 min-h-[46px] flex items-center justify-center text-xs sm:text-sm text-slate-600 italic">
+                    <span id="transcriptText">Click the microphone button below and speak...</span>
+                </div>
+
+                <!-- Feedback Banner Message -->
+                <div id="feedbackBanner" class="hidden mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition-all duration-300">
+                    <!-- Dynamic feedback string inserted here -->
+                </div>
+            </div>
+
+            <!-- INTERACTION CONTROLS BAR -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-1">
+                
+                <!-- PUSH TO TALK MICROPHONE BUTTON -->
+                <button id="micBtn" onclick="toggleSpeechRecognition()" class="w-full sm:w-auto min-w-[220px] bg-festivePink hover:bg-rose-600 text-white font-extrabold text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-rose-800 transition flex items-center justify-center gap-3 active:scale-95">
+                    <i id="micIcon" class="fa-solid fa-microphone text-2xl"></i>
+                    <span id="micBtnText">Tap to Speak</span>
+                </button>
+
+                <!-- RETRY BUTTON (Hidden until needed/always available after fail) -->
+                <button id="retryBtn" onclick="resetLevelState()" class="hidden w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-base sm:text-lg py-4 px-6 rounded-2xl shadow-md border-b-4 border-amber-700 transition items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Try Again</span>
+                </button>
+
+                <!-- NEXT LEVEL BUTTON (Mandatory click to advance) -->
+                <button id="nextBtn" onclick="advanceToNextLevel()" class="hidden w-full sm:w-auto bg-festiveGreen hover:bg-emerald-500 text-festiveDark font-black text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-xl border-b-4 border-emerald-700 transition items-center justify-center gap-2 animate-bounce">
+                    <span>Next Level</span>
+                    <i class="fa-solid fa-circle-arrow-right"></i>
+                </button>
+
+                <!-- MANUAL TYPING / SPEECH SIMULATION FALLBACK BUTTON -->
+                <button id="fallbackBtn" onclick="triggerFallbackInput()" class="text-xs text-slate-300 underline hover:text-white transition mt-1 sm:mt-0 sm:ml-auto">
+                    Keyboard Fallback
+                </button>
+            </div>
+
+        </div>
+
+        <!-- GAME COMPLETE / VICTORY SCREEN -->
+        <div id="finishScreen" class="hidden bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-4 border-festiveGreen text-center relative overflow-hidden my-4">
+            <!-- Confetti Canvas overlay -->
+            <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none w-full h-full z-0"></canvas>
+
+            <div class="relative z-10">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-100 text-festiveGreen rounded-full flex items-center justify-center mx-auto mb-4 text-4xl sm:text-5xl shadow-inner border-2 border-emerald-300">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+
+                <h2 class="text-3xl sm:text-5xl font-black text-festiveDark mb-2">Tahniah! Excellent!</h2>
+                <p class="text-slate-600 text-base sm:text-lg mb-6">You successfully unlocked all 10 celebration obstacles!</p>
+
+                <!-- Final Score Display Box -->
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 max-w-sm mx-auto mb-6 shadow-sm">
+                    <span class="text-xs font-bold text-amber-800 uppercase tracking-wider block mb-1">Final Score</span>
+                    <div class="text-4xl sm:text-6xl font-black text-amber-600 mb-2">
+                        <span id="finalScoreText">100</span> <span class="text-2xl text-amber-400">/ 100</span>
+                    </div>
+                    <!-- Star Rating -->
+                    <div id="starRating" class="flex justify-center gap-2 text-amber-400 text-2xl">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+
+                <!-- Learning Outcome Note -->
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto mb-8 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    You are now ready to speak about Teacher's Day, Malaysia Day, and National Day with your classmates!
+                </p>
+
+                <!-- Play Again Button -->
+                <button onclick="restartGame()" class="bg-festiveGreen hover:bg-emerald-400 text-festiveDark font-black text-xl px-8 py-4 rounded-2xl shadow-lg border-b-4 border-emerald-600 transition hover:scale-105 active:scale-95 inline-flex items-center gap-3">
+                    <i class="fa-solid fa-rotate-right"></i> PLAY AGAIN
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- INSTRUCTION & HELP MODAL -->
+    <div id="helpModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-festiveBlue relative">
+            <button onclick="toggleHelpModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-2xl font-bold text-festiveDark mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-festiveBlue"></i> How to Play
+            </h3>
+
+            <div class="space-y-3 text-sm text-slate-600 mb-6">
+                <div class="flex items-start gap-3">
+                    <span class="bg-indigo-100 text-indigo-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs mt-0.5">1</span>
+                    <p>Read the displayed target sentence carefully.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-indigo-100 text-indigo-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs mt-0.5">2</span>
+                    <p>Click <strong>"Listen to Model"</strong> if you want to hear how it sounds first.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-indigo-100 text-indigo-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs mt-0.5">3</span>
+                    <p>Click <strong>"Tap to Speak"</strong>, allow mic access, and read the sentence aloud.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-indigo-100 text-indigo-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs mt-0.5">4</span>
+                    <p>If correct, the gate opens! Click <strong>"Next Level"</strong> to drive forward.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="bg-indigo-100 text-indigo-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-xs mt-0.5">5</span>
+                    <p>If incorrect, don't worry! Watch the funny crash and try again!</p>
+                </div>
+            </div>
+
+            <button onclick="toggleHelpModal(false)" class="w-full bg-festiveBlue hover:bg-sky-600 text-white font-bold py-3 rounded-xl transition">
+                Got It! Let's Play
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="max-w-4xl mx-auto w-full text-center py-3 text-xs text-slate-300">
+        Speak to Connect: Our Celebrations, Our Stories • KSSR Semakan Year 4 Primary ESL
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        /* ==========================================================================
+           1. CURRICULUM SENTENCES & STATE VARIABLES
+           ========================================================================== */
+        const TARGET_SENTENCES = [
+            "When is Teacher's Day?",
+            "Teacher's Day is on the sixteenth of May.",
+            "When is Malaysia Day?",
+            "Malaysia Day is on the sixteenth of September.",
+            "When is National Day?",
+            "National Day is on the thirty-first of August.",
+            "Really? That's interesting!",
+            "Oh, I see. Thank you for telling me.",
+            "Sorry, could you say that again, please?",
+            "Do you mean Malaysia Day is on the sixteenth of September?"
+        ];
+
+        let currentLevel = 1; // 1 to 10
+        let score = 0;
+        let isLevelCompleted = false; // Anti-double scoring flag
+        let isListening = false;
+        let soundMuted = false;
+
+        // Speech Recognition instances
+        let recognition = null;
+        let audioStream = null;
+
+        /* ==========================================================================
+           2. AUDIO SYNTHESIZER (Web Audio API - No external asset dependency)
+           ========================================================================== */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+        }
+
+        function playSound(type) {
+            if (soundMuted) return;
+            try {
+                initAudioContext();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'success') {
+                    // Upward Chime
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now); // A4
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.3); // A5
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'crash') {
+                    // Funny Crash Bonk + Noise
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'win') {
+                    // Victory Fanfare
+                    [261.63, 329.63, 392.00, 523.25].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.12);
+                        osc.stop(now + idx * 0.12 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.warn('Web Audio Playback failed', e);
+            }
+        }
+
+        function toggleSound() {
+            soundMuted = !soundMuted;
+            const icon = document.getElementById('soundIcon');
+            if (soundMuted) {
+                icon.className = "fa-solid fa-volume-xmark text-lg text-rose-300";
+            } else {
+                icon.className = "fa-solid fa-volume-high text-lg";
+                playSound('success');
+            }
+        }
+
+        /* ==========================================================================
+           3. SPEECH SYNTHESIS (Listen to Model TTS)
+           ========================================================================== */
+        function speakModelSentence() {
+            if (!('speechSynthesis' in window)) {
+                alert("Text-to-speech is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel(); // Stop ongoing speech
+            const target = TARGET_SENTENCES[currentLevel - 1];
+            const utterance = new SpeechSynthesisUtterance(target);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85; // Slightly slower pace for primary ESL learners
+            utterance.pitch = 1.0;
+
+            const ttsBtn = document.getElementById('ttsBtn');
+            ttsBtn.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-100');
+
+            utterance.onend = () => {
+                ttsBtn.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-100');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /* ==========================================================================
+           4. GAME CONTROL & SCREEN FLOW
+           ========================================================================== */
+        function startGame() {
+            initAudioContext();
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('gameScreen').classList.add('flex');
+            
+            setupMilestoneMarkers();
+            loadLevel(1);
+            setupSpeechRecognition();
+        }
+
+        function setupMilestoneMarkers() {
+            const container = document.getElementById('milestoneMarkers');
+            container.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const dot = document.createElement('div');
+                dot.id = `marker-${i}`;
+                dot.className = `w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                    i === 1 ? 'bg-festiveYellow text-slate-800 ring-2 ring-white scale-125' : 'bg-white/40 text-white'
+                }`;
+                dot.innerText = i;
+                container.appendChild(dot);
+            }
+        }
+
+        function loadLevel(lvl) {
+            currentLevel = lvl;
+            isLevelCompleted = false;
+
+            // Update UI Counters & Text
+            document.getElementById('currentLevelText').innerText = currentLevel;
+            document.getElementById('scoreText').innerText = score;
+            document.getElementById('targetSentenceText').innerText = `"${TARGET_SENTENCES[currentLevel - 1]}"`;
+
+            // Reset Feedback Banner & Transcript
+            const feedback = document.getElementById('feedbackBanner');
+            feedback.className = "hidden mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition-all duration-300";
+            feedback.innerText = "";
+
+            document.getElementById('transcriptText').innerText = "Click the microphone button below and speak...";
+            document.getElementById('transcriptBox').className = "w-full bg-slate-50 border border-slate-200 rounded-xl p-3 min-h-[46px] flex items-center justify-center text-xs sm:text-sm text-slate-600 italic";
+
+            // Update Topic Tag
+            const tag = document.getElementById('topicTag');
+            if (currentLevel <= 6) {
+                tag.innerText = "Asking & Stating Dates";
+            } else if (currentLevel <= 8) {
+                tag.innerText = "Showing Understanding";
+            } else {
+                tag.innerText = "Asking Clarification";
+            }
+
+            // Buttons State
+            document.getElementById('nextBtn').classList.add('hidden');
+            document.getElementById('retryBtn').classList.add('hidden');
+            document.getElementById('micBtn').classList.remove('hidden');
+            updateMicButtonUI(false);
+
+            // Car Position & Gate Animation
+            positionCarForLevel(currentLevel);
+            resetObstacleGate();
+            updateMilestoneMarkers(currentLevel);
+        }
+
+        function positionCarForLevel(lvl) {
+            const carWrapper = document.getElementById('carWrapper');
+            carWrapper.className = "absolute bottom-4 transition-all duration-700 z-10 flex flex-col items-center";
+            // Translate car along road based on progress percentage
+            const percentage = ((lvl - 1) / 9) * 60; // Leave space before obstacle gate
+            carWrapper.style.left = `calc(${Math.min(percentage, 60)}% + 12px)`;
+        }
+
+        function resetObstacleGate() {
+            const barrierArm = document.getElementById('barrierArm');
+            barrierArm.style.transform = 'rotate(0deg)';
+            document.getElementById('obstacleGate').classList.remove('opacity-30');
+            document.getElementById('carSVG').classList.remove('car-crash', 'car-drive-pass');
+        }
+
+        function updateMilestoneMarkers(activeLvl) {
+            for (let i = 1; i <= 10; i++) {
+                const marker = document.getElementById(`marker-${i}`);
+                if (marker) {
+                    if (i < activeLvl) {
+                        marker.className = "w-5 h-5 rounded-full bg-festiveGreen text-slate-900 font-bold flex items-center justify-center text-[10px] shadow";
+                    } else if (i === activeLvl) {
+                        marker.className = "w-6 h-6 rounded-full bg-festiveYellow text-slate-900 font-black flex items-center justify-center text-xs ring-4 ring-white/50 shadow-lg scale-110";
+                    } else {
+                        marker.className = "w-5 h-5 rounded-full bg-white/40 text-white font-bold flex items-center justify-center text-[10px]";
+                    }
+                }
+            }
+
+            // Progress Bar Update
+            const progressPercent = ((activeLvl - 1) / 10) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+        }
+
+        /* ==========================================================================
+           5. SPEECH RECOGNITION ENGINE & NORMALIZATION
+           ========================================================================== */
+        function setupSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                console.warn("Web Speech API not natively supported in this browser.");
+                showFeedback("Microphone speech recognition is not supported on this browser. You can use 'Keyboard Fallback'!", "warning");
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            // Preferred Language: Malaysian English, fallback to standard English
+            recognition.lang = 'en-MY';
+
+            recognition.onstart = () => {
+                isListening = true;
+                updateMicButtonUI(true);
+                document.getElementById('transcriptText').innerText = "Listening... Speak now!";
+                document.getElementById('transcriptBox').className = "w-full bg-rose-50 border-2 border-rose-300 rounded-xl p-3 min-h-[46px] flex items-center justify-center text-xs sm:text-sm text-rose-700 font-semibold animate-pulse";
+            };
+
+            recognition.onresult = (event) => {
+                isListening = false;
+                updateMicButtonUI(false);
+
+                const spokenText = event.results[0][0].transcript;
+                document.getElementById('transcriptText').innerText = `"${spokenText}"`;
+                document.getElementById('transcriptBox').className = "w-full bg-slate-100 border border-slate-300 rounded-xl p-3 min-h-[46px] flex items-center justify-center text-xs sm:text-sm text-slate-800 font-bold";
+
+                evaluateSpokenSentence(spokenText);
+            };
+
+            recognition.onerror = (event) => {
+                isListening = false;
+                updateMicButtonUI(false);
+                console.error("Speech Rec Error:", event.error);
+
+                if (event.error === 'not-allowed') {
+                    showFeedback("Microphone permission denied. Please allow mic access or use keyboard fallback.", "error");
+                } else if (event.error === 'no-speech') {
+                    showFeedback("Please speak clearly into your microphone and try again.", "warning");
+                } else {
+                    showFeedback("Speech not recognized. Let's try once more!", "warning");
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                updateMicButtonUI(false);
+            };
+        }
+
+        async function toggleSpeechRecognition() {
+            if (isLevelCompleted) return; // Prevent mic trigger after passing until Next Level clicked
+
+            if (isListening) {
+                if (recognition) recognition.stop();
+                return;
+            }
+
+            // Request Noise Suppression Microphone Stream where supported
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    audioStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            noiseSuppression: true,
+                            echoCancellation: true,
+                            autoGainControl: true
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn("Could not request audio constraints:", err);
+            }
+
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.warn("Recognition already started or error:", e);
+                }
+            } else {
+                triggerFallbackInput();
+            }
+        }
+
+        function updateMicButtonUI(active) {
+            const micBtn = document.getElementById('micBtn');
+            const micIcon = document.getElementById('micIcon');
+            const micText = document.getElementById('micBtnText');
+
+            if (active) {
+                micBtn.className = "w-full sm:w-auto min-w-[220px] bg-rose-600 text-white font-extrabold text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-rose-900 transition flex items-center justify-center gap-3 mic-active";
+                micIcon.className = "fa-solid fa-microphone-lines text-2xl animate-bounce";
+                micText.innerText = "Listening...";
+            } else {
+                micBtn.className = "w-full sm:w-auto min-w-[220px] bg-festivePink hover:bg-rose-600 text-white font-extrabold text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-rose-800 transition flex items-center justify-center gap-3 active:scale-95";
+                micIcon.className = "fa-solid fa-microphone text-2xl";
+                micText.innerText = "Tap to Speak";
+            }
+        }
+
+        /* ==========================================================================
+           6. PRONUNCIATION TOLERANCE & SIMILARITY CHECKING
+           ========================================================================== */
+
+        // Converts digits and ordinal representations to spelled-out words
+        function normalizeText(str) {
+            if (!str) return "";
+            let text = str.toLowerCase();
+
+            // Replace common speech-to-text ordinal number variations
+            const ordinalMap = {
+                "16th": "sixteenth",
+                "16": "sixteenth",
+                "31st": "thirty-first",
+                "31": "thirty-first",
+                "31st.": "thirty-first",
+                "teachers": "teacher's",
+                "teachers'": "teacher's"
+            };
+
+            // Remove punctuation except apostrophes inside words
+            text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "");
+
+            const words = text.split(/\s+/).map(w => ordinalMap[w] || w);
+            return words.join(" ").trim();
+        }
+
+        // Levenshtein Similarity Ratio Calculation
+        function calculateSimilarity(str1, str2) {
+            const s1 = normalizeText(str1);
+            const s2 = normalizeText(str2);
+
+            if (s1 === s2) return 1.0;
+            if (s1.length === 0 || s2.length === 0) return 0.0;
+
+            const matrix = [];
+            for (let i = 0; i <= s1.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= s2.length; j++) {
+                matrix[0][j] = j;
+            }
+
+            for (let i = 1; i <= s1.length; i++) {
+                for (let j = 1; j <= s2.length; j++) {
+                    if (s1.charAt(i - 1) === s2.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1, // substitution
+                            matrix[i][j - 1] + 1,     // insertion
+                            matrix[i - 1][j] + 1      // deletion
+                        );
+                    }
+                }
+            }
+
+            const distance = matrix[s1.length][s2.length];
+            const maxLength = Math.max(s1.length, s2.length);
+            return 1.0 - distance / maxLength;
+        }
+
+        function evaluateSpokenSentence(spokenText) {
+            const target = TARGET_SENTENCES[currentLevel - 1];
+            const similarity = calculateSimilarity(spokenText, target);
+
+            console.log(`Spoken: "${spokenText}" | Target: "${target}" | Similarity: ${(similarity * 100).toFixed(1)}%`);
+
+            // Check tolerance threshold (~75-80% similarity threshold for primary ESL pupils)
+            if (similarity >= 0.75) {
+                handleSuccessResponse();
+            } else {
+                handleFailureResponse();
+            }
+        }
+
+        /* ==========================================================================
+           7. SUCCESS / FAILURE HANDLERS & ANIMATIONS
+           ========================================================================== */
+        function handleSuccessResponse() {
+            if (isLevelCompleted) return; // Prevent double scoring
+            isLevelCompleted = true;
+
+            // Award points
+            score += 10;
+            document.getElementById('scoreText').innerText = score;
+
+            playSound('success');
+            showFeedback("Great speaking! +10 points! You passed the obstacle!", "success");
+
+            // Open Gate Barrier Animation
+            document.getElementById('barrierArm').style.transform = 'rotate(-85deg)';
+
+            // Drive Car Pass
+            const carSVG = document.getElementById('carSVG');
+            carSVG.classList.add('car-drive-pass');
+
+            // Hide Mic, Show Next Level Button
+            document.getElementById('micBtn').classList.add('hidden');
+            document.getElementById('retryBtn').classList.add('hidden');
+            
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.classList.remove('hidden');
+            nextBtn.classList.add('flex');
+        }
+
+        function handleFailureResponse() {
+            playSound('crash');
+            showFeedback("Not quite! Watch the crash and try again!", "error");
+
+            // Trigger Crash Bounce FX
+            const carSVG = document.getElementById('carSVG');
+            carSVG.classList.remove('car-crash');
+            void carSVG.offsetWidth; // Trigger reflow
+            carSVG.classList.add('car-crash');
+
+            // Spawn Funny Smoke FX
+            spawnSmokeParticles();
+
+            // Show Retry Button alongside Mic
+            document.getElementById('retryBtn').classList.remove('hidden');
+            document.getElementById('retryBtn').classList.add('flex');
+        }
+
+        function spawnSmokeParticles() {
+            const container = document.getElementById('smokeContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'smoke-particle';
+                const size = Math.floor(Math.random() * 20) + 15;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 30 - 15}px`;
+                particle.style.animationDelay = `${i * 0.1}s`;
+                container.appendChild(particle);
+            }
+            setTimeout(() => { container.innerHTML = ''; }, 1200);
+        }
+
+        function resetLevelState() {
+            document.getElementById('carSVG').classList.remove('car-crash');
+            document.getElementById('retryBtn').classList.add('hidden');
+            const feedback = document.getElementById('feedbackBanner');
+            feedback.className = "hidden mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold transition-all duration-300";
+        }
+
+        function advanceToNextLevel() {
+            if (currentLevel < 10) {
+                loadLevel(currentLevel + 1);
+            } else {
+                // Game Finished!
+                showGameCompleteScreen();
+            }
+        }
+
+        function showFeedback(msg, type) {
+            const banner = document.getElementById('feedbackBanner');
+            banner.classList.remove('hidden');
+
+            if (type === 'success') {
+                banner.className = "mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-300 shadow-sm flex items-center justify-center gap-2 animate-bounce";
+                banner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i> <span>${msg}</span>`;
+            } else if (type === 'error') {
+                banner.className = "mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold bg-rose-100 text-rose-800 border-2 border-rose-300 shadow-sm flex items-center justify-center gap-2";
+                banner.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 text-lg"></i> <span>${msg}</span>`;
+            } else {
+                banner.className = "mt-3 w-full py-2.5 px-4 rounded-xl text-sm sm:text-base font-bold bg-amber-100 text-amber-800 border-2 border-amber-300 shadow-sm flex items-center justify-center gap-2";
+                banner.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600 text-lg"></i> <span>${msg}</span>`;
+            }
+        }
+
+        /* ==========================================================================
+           8. FALLBACK INPUT (Type/Simulate Speech for non-mic users)
+           ========================================================================== */
+        function triggerFallbackInput() {
+            const target = TARGET_SENTENCES[currentLevel - 1];
+            const input = prompt(`Microphone Fallback Practice:\nType or copy the sentence below to verify:\n\n"${target}"`, target);
+
+            if (input !== null) {
+                document.getElementById('transcriptText').innerText = `"${input}"`;
+                document.getElementById('transcriptBox').className = "w-full bg-slate-100 border border-slate-300 rounded-xl p-3 min-h-[46px] flex items-center justify-center text-xs sm:text-sm text-slate-800 font-bold";
+                evaluateSpokenSentence(input);
+            }
+        }
+
+        /* ==========================================================================
+           9. GAME COMPLETE & CONFETTI CELEBRATION
+           ========================================================================== */
+        function showGameCompleteScreen() {
+            playSound('win');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('finishScreen').classList.remove('hidden');
+
+            document.getElementById('finalScoreText').innerText = score;
+            triggerConfetti();
+        }
+
+        function restartGame() {
+            score = 0;
+            currentLevel = 1;
+            document.getElementById('finishScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        function toggleHelpModal(show) {
+            const modal = document.getElementById('helpModal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        /* Simple Canvas Confetti FX */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const pieces = [];
+            const colors = ['#EF476F', '#FFD166', '#06D6A0', '#118AB2', '#8338EC'];
+
+            for (let i = 0; i < 80; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: Math.random() * 3 + 2,
+                    angle: Math.random() * 360
+                });
+            }
+
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.speed;
+                    p.angle += 2;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.angle * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+
+                    if (p.y > canvas.height) {
+                        p.y = -10;
+                    }
+                });
+                if (!document.getElementById('finishScreen').classList.contains('hidden')) {
+                    requestAnimationFrame(animateConfetti);
+                }
+            }
+            animateConfetti();
+        }
+    </script>
+</body>
+</html>
